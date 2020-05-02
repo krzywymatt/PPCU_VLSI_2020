@@ -1,0 +1,1 @@
+s1(02May2020:20:24:50):  xrun -F mtm_Alu_post.f +access+r +neg_check -maxdelays +sdf_file+/home/student/jfilipiak/PPCU_VLSI/TSMC130/PPCU_VLSI_2020/run_post/mtm_Alu.sdf.gz.X +xmsdf_cmd_file+/home/student/jfilipiak/PPCU_VLSI/TSMC130/PPCU_VLSI_2020/run_post/mtm_Alu.sdfcmd -ncinitialize rand_2state:56 ../pr/RESULTS_PR/mtm_Alu.noPower.v.gz -tcl -input tcl/dumptcf.tcl 
