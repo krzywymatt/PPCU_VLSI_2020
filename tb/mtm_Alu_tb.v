@@ -40,60 +40,60 @@ module mtm_Alu_tb (
 	localparam SUB		  = 3'b101;
 	//___________________PARAMS____________________
 	localparam TYPE_DATA  = 1'b0;
-    localparam TYPE_CMD   = 1'b1;
+	localparam TYPE_CMD   = 1'b1;
 	localparam PERIOD     = 4'd10;
 	localparam ERR_DATA	  = 6'b100100;
-    localparam ERR_CRC    = 6'b010010;
-    localparam ERR_OP     = 6'b001001;
+	localparam ERR_CRC    = 6'b010010;
+	localparam ERR_OP     = 6'b001001;
 	//____________________REGS_____________________	
-    reg [54:0] received_data, CMD;
+	reg [54:0] received_data, CMD;
 	reg [10:0] received_ctl,  CTL;
-    reg [31:0] data_A, data_B, min, max;
+	reg [31:0] data_A, data_B, min, max;
 	reg [2:0]  data_OP;
 	reg [3:0]  data_crc;
 	reg [7:0]  sample_byte, sample_ctl;
     
-    always
-    begin
-        #(PERIOD/2) clk <= ~clk;
+	always
+	begin
+		#(PERIOD/2) clk <= ~clk;
 	end
 
-    initial 
+	initial 
 	begin
-	    clk   = 1'b0;
-        rst_n = 1'b1;
-        sin   = 1'b1;
+		clk   = 1'b0;
+		rst_n = 1'b1;
+		sin   = 1'b1;
 
-	    test_random_data;
-	    test_corners;
-	    test_invalid_data;
-	    test_wrong_op;
-	    test_wrong_crc;
-	    $finish;
-    end
+		test_random_data;
+		test_corners;
+		test_invalid_data;
+		test_wrong_op;
+		test_wrong_crc;
+		$finish;
+	end
 
     
     //___________________TASKS____________________________
     
-    task send_byte( input frame_type, input [7:0] data );
-        begin
+	task send_byte( input frame_type, input [7:0] data );
+		begin
 			clk = 1'b0;
 			#PERIOD sin = 1'b0;
-            #PERIOD sin = frame_type;  
-            #PERIOD sin = data[7];      
-            #PERIOD sin = data[6];      
-            #PERIOD sin = data[5];      
-            #PERIOD sin = data[4];      
-            #PERIOD sin = data[3];      
-            #PERIOD sin = data[2];      
-            #PERIOD sin = data[1];      
-            #PERIOD sin = data[0];      
-            #PERIOD sin = 1'b1;        
-        end
-    endtask	
+			#PERIOD sin = frame_type;  
+			#PERIOD sin = data[7];      
+			#PERIOD sin = data[6];      
+			#PERIOD sin = data[5];      
+			#PERIOD sin = data[4];      
+			#PERIOD sin = data[3];      
+			#PERIOD sin = data[2];      
+			#PERIOD sin = data[1];      
+			#PERIOD sin = data[0];      
+			#PERIOD sin = 1'b1;        
+		end
+	endtask	
     //_____________________________________________________________________
     
-    task send_calculation_data ( input [31:0] A, B, input [2:0] OP, input [3:0] CRC );    
+	task send_calculation_data ( input [31:0] A, B, input [2:0] OP, input [3:0] CRC );    
 	begin
 		send_byte(TYPE_DATA, B[31:24]);
 		send_byte(TYPE_DATA, B[23:16]);
@@ -105,12 +105,12 @@ module mtm_Alu_tb (
 		send_byte(TYPE_DATA, A[7:0]);
 		send_byte(TYPE_CMD, {1'b0, OP, CRC});
 	end
-    endtask
+	endtask
     //_____________________________________________________________________	
 	
-    task compare ( input [54:0] expected_data );
-        begin
-            received_data <= 0;
+	task compare ( input [54:0] expected_data );
+		begin
+			received_data <= 0;
            @(negedge sout);
             repeat(55)
             begin
@@ -191,16 +191,16 @@ module mtm_Alu_tb (
     
     //______________________________TEST1__________________________________ 
     task test_random_data();
-    begin
+	begin
 	reset_all;
-        begin 	
-	        $display("\n TEST1.1: random numbers AND ");
-		    repeat(250)
-		    begin
-		        data_OP = AND;
-		        generate_random(data_A, data_B);
-			    calc_crc_send_compare(data_OP, data_A, data_B);
-		    end
+		begin 	
+			$display("\n TEST1.1: random numbers AND ");
+			repeat(250)
+			begin
+				data_OP = AND;
+				generate_random(data_A, data_B);
+				calc_crc_send_compare(data_OP, data_A, data_B);
+			end
 		
 			$display("\n TEST1.2: random numbers OR");
 			repeat(250)
@@ -216,11 +216,11 @@ module mtm_Alu_tb (
 				data_OP = ADD;
 				generate_random(data_A, data_B);
 				calc_crc_send_compare(data_OP, data_A, data_B);
-		    end
+			end
 		
-		    $display("\n TEST1.4: random numbers SUB");
-		    repeat(250)
-		    begin
+			$display("\n TEST1.4: random numbers SUB");
+			repeat(250)
+			begin
 				data_OP = SUB;
 				generate_random(data_A, data_B);
 				calc_crc_send_compare(data_OP, data_A, data_B);
@@ -417,9 +417,9 @@ module mtm_Alu_tb (
 	   //x^3 + x^1 + 1
 		input  reg [36:0] data_in;
 		output reg [2:0]  crc3_result;
-			   reg [36:0] d;
-               reg [2:0]  result;
-        begin
+				reg [36:0] d;
+				reg [2:0]  result;
+		begin
 			d = data_in;
 			result[0] = d[35] ^ d[32] ^ d[31] ^ d[30] ^ d[28] ^ d[25] ^ d[24] ^ d[23] ^ d[21] ^ d[18] ^ d[17] ^ d[16] ^ d[14] ^ d[11] ^ d[10] ^ d[9] ^ d[7] ^ d[4] ^ d[3] ^ d[2] ^ d[0];
 			result[1] = d[36] ^ d[35] ^ d[33] ^ d[30] ^ d[29] ^ d[28] ^ d[26] ^ d[23] ^ d[22] ^ d[21] ^ d[19] ^ d[16] ^ d[15] ^ d[14] ^ d[12] ^ d[9] ^ d[8] ^ d[7] ^ d[5] ^ d[2] ^ d[1] ^ d[0];
@@ -433,8 +433,8 @@ module mtm_Alu_tb (
 	   //x^4 + x^1 +1
 		input  reg [67:0] data_in;
 		output reg [3:0]  crc4_result;
-               reg [67:0] d;
-               reg [3:0]  result;
+				reg [67:0] d;
+				reg [3:0]  result;
 		begin
 			d = data_in;
 			result[0] = d[66] ^ d[64] ^ d[63] ^ d[60] ^ d[56] ^ d[55] ^ d[54] ^ d[53] ^ d[51] ^ d[49] ^ d[48] ^ d[45] ^ d[41] ^ d[40] ^ d[39] ^ d[38] ^ d[36] ^ d[34] ^ d[33] ^ d[30] ^ d[26] ^ d[25] ^ d[24] ^ d[23] ^ d[21] ^ d[19] ^ d[18] ^ d[15] ^ d[11] ^ d[10] ^ d[9] ^ d[8] ^ d[6] ^ d[4] ^ d[3] ^ d[0];
@@ -443,6 +443,6 @@ module mtm_Alu_tb (
 			result[3] = d[67] ^ d[65] ^ d[63] ^ d[62] ^ d[59] ^ d[55] ^ d[54] ^ d[53] ^ d[52] ^ d[50] ^ d[48] ^ d[47] ^ d[44] ^ d[40] ^ d[39] ^ d[38] ^ d[37] ^ d[35] ^ d[33] ^ d[32] ^ d[29] ^ d[25] ^ d[24] ^ d[23] ^ d[22] ^ d[20] ^ d[18] ^ d[17] ^ d[14] ^ d[10] ^ d[9] ^ d[8] ^ d[7] ^ d[5] ^ d[3] ^ d[2];
 			crc4_result = result;
 		end
-    endtask
+	endtask
 	
 endmodule

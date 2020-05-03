@@ -30,8 +30,8 @@
 	output reg         tx_dt_ready
  );
 	//__________CORE_STATES__________	
-	localparam CORE_IDLE      = 1'b0;
-	localparam CORE_CALC	  = 1'b1;
+	localparam CORE_IDLE	= 1'b0;
+	localparam CORE_CALC	= 1'b1;
 
 	//__________ALU_OPCODES__________	
 	localparam ALU_AND		= 3'b000;
@@ -71,10 +71,10 @@
 	always @*
     begin
         casex({state,           rx_dt_ready })
-        	 ({CORE_IDLE,       1'b1        }): state_nxt = CORE_CALC;
-        	 ({CORE_IDLE,       1'b0        }): state_nxt = CORE_IDLE;
+			 ({CORE_IDLE,       1'b1        }): state_nxt = CORE_CALC;
+			 ({CORE_IDLE,       1'b0        }): state_nxt = CORE_IDLE;
         	 ({CORE_CALC,       1'bx        }): state_nxt = CORE_IDLE;
-        	 default: 				            state_nxt = state;
+        	 default:							state_nxt = state;
         endcase
     end  
 
@@ -83,68 +83,68 @@
 
 	always @* 
 	begin
-	   data_C_nxt		    = data_C;
-       data_flag_nxt        = data_flag;
-       data_crc_nxt         = data_crc;
-       tx_dt_ready_nxt      = tx_dt_ready;	
+		data_C_nxt		    = data_C;
+		data_flag_nxt        = data_flag;
+		data_crc_nxt         = data_crc;
+		tx_dt_ready_nxt      = tx_dt_ready;	
        	
-	   case(state_nxt)
-	       CORE_IDLE: 
-	 	   begin
-	 	       data_C_nxt		    = 32'b0;
-	 		   data_flag_nxt	    = 4'b0;
-	 		   data_crc_nxt		    = 3'b0;
-	 		   tx_dt_ready_nxt	    = 1'b0;
-	 	   end
+		case(state_nxt)
+			CORE_IDLE: 
+			begin
+				data_C_nxt		    = 32'b0;
+				data_flag_nxt	    = 4'b0;
+				data_crc_nxt		    = 3'b0;
+				tx_dt_ready_nxt	    = 1'b0;
+			end
 	 	   
-	 	   CORE_CALC: 
-	 	   begin
-	 	       calculate(data_A, data_B, data_OP, data_flag_nxt, data_C_nxt);
-               crc3_37({data_C_nxt, 1'b0, data_flag_nxt}, data_crc_nxt);
-	 		   tx_dt_ready_nxt	= 1'b1;
-	 	   end
-	   endcase
-    end
+			CORE_CALC: 
+			begin
+				calculate(data_A, data_B, data_OP, data_flag_nxt, data_C_nxt);
+				crc3_37({data_C_nxt, 1'b0, data_flag_nxt}, data_crc_nxt);
+				tx_dt_ready_nxt	= 1'b1;
+			end	
+		endcase
+	end
 
 	//_____________TASKS_____________	
    
 	task calculate( input  [31:0] A, B, input  [2:0]  OP, output [3:0]  Flags, output [31:0] C);
-         reg carry, overflow, negative, zero;
-         begin    
-             case(OP)
-             ALU_AND: 
-                 begin
-                     C = A & B;
-                     carry = 1'b0;
-                     overflow = 1'b0;
-                     zero=~(|C);
-                     negative=C[31];
-                 end
-             ALU_OR:
-                 begin
-                     C = A | B;
-                     carry = 1'b0;
-                     overflow = 1'b0;
-                     zero=~(|C);
-                     negative=C[31];
-                 end
-             ALU_ADD: 
-                 begin
-                     {carry, C} = {1'b0, A} + {1'b0, B};
-                     overflow = ((B[31] ^ A[31] ^ C[31]) ^ carry);
-                     zero=~(|C);
-                     negative=C[31];
-                 end
-             ALU_SUB: 
-                 begin
-                     {carry, C} = {1'b0, A} - {1'b0, B};
-                     overflow = ((B[31] ^ A[31] ^ C[31]) ^ carry);
-                     zero=~(|C);
-                     negative=C[31];
-                 end
-             endcase
-             Flags = {carry, overflow, zero, negative};
-         end
+		reg carry, overflow, negative, zero;
+		begin    
+			case(OP)
+			ALU_AND: 
+				begin
+					C = A & B;
+					carry = 1'b0;
+					overflow = 1'b0;
+					zero=~(|C);
+					negative=C[31];
+				end
+			ALU_OR:
+				begin
+					C = A | B;
+					carry = 1'b0;
+					overflow = 1'b0;
+					zero=~(|C);
+					negative=C[31];
+				end
+			ALU_ADD: 
+				begin
+					{carry, C} = {1'b0, A} + {1'b0, B};
+					overflow = ((B[31] ^ A[31] ^ C[31]) ^ carry);
+					zero=~(|C);
+					negative=C[31];
+				end
+			ALU_SUB: 
+				begin
+					{carry, C} = {1'b0, A} - {1'b0, B};
+					overflow = ((B[31] ^ A[31] ^ C[31]) ^ carry);
+					zero=~(|C);
+					negative=C[31];
+				end
+			endcase
+			Flags = {carry, overflow, zero, negative};
+		end
 	endtask
 	//___________________________________________________________ 
 	    	

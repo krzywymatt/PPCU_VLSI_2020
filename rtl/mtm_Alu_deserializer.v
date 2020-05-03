@@ -59,52 +59,52 @@
 	begin
 		if(!rst_n) 
 		begin
-			state	       <= DES_IDLE;
-			rx_ready       <= 1'b0;
-			error_occured  <= 1'b0;
-			error_flag     <= ERR_NONE;
-			data_A 	 	   <= 32'b0;
-			data_B		   <= 32'b0;
-			data_OP 	   <= 3'b0;
-			bit_cnt  	   <= 4'b0;
-			error	       <= 1'b0;
-			OUT			   <= 98'b0;
+			state	       	<= DES_IDLE;
+			rx_ready       	<= 1'b0;
+			error_occured  	<= 1'b0;
+			error_flag     	<= ERR_NONE;
+			data_A 			<= 32'b0;
+			data_B		   	<= 32'b0;
+			data_OP 	   	<= 3'b0;
+			bit_cnt  	   	<= 4'b0;
+			error	       	<= 1'b0;
+			OUT			   	<= 98'b0;
 		end
 		else 
 		begin
-			state		   <= state_nxt;
-			rx_ready	   <= rx_ready_nxt;
-			error_occured  <= error_occured_nxt;
-			error_flag     <= error_flag_nxt;	
-			data_A 	 	   <= data_A_nxt;
-			data_B         <= data_B_nxt;
-			data_OP        <= data_OP_nxt;
-			bit_cnt  	   <= bit_cnt_nxt;
-			error	   	   <= error_nxt;
-		    OUT 		   <= OUT_nxt;
+			state		   	<= state_nxt;
+			rx_ready	   	<= rx_ready_nxt;
+			error_occured  	<= error_occured_nxt;
+			error_flag     	<= error_flag_nxt;	
+			data_A 	 	   	<= data_A_nxt;
+			data_B         	<= data_B_nxt;
+			data_OP        	<= data_OP_nxt;
+			bit_cnt  	   	<= bit_cnt_nxt;
+			error	   	   	<= error_nxt;
+			OUT 		   	<= OUT_nxt;
 		end
 	end
 	
    //__________NEXT_STATE_LOGIC___________
     always @*
     begin
-        casex ({state,          sin,  bit_cnt,        error})
-              ({DES_IDLE,       1'b1, 7'bxxxxxxx,        1'bx }): state_nxt = DES_IDLE;
-              ({DES_IDLE,       1'b0, 7'bxxxxxxx,        1'bx }): state_nxt = DES_WAIT;
-			  ({DES_WAIT,       1'bx, 7'bxxxxxxx,        1'bx }): state_nxt = DES_DATA;
-			  ({DES_DATA,       1'bx, 7'd98,             1'b0 }): state_nxt = DES_CHECK_DATA;
-			  ({DES_DATA,       1'bx, 7'bxxxxxxx,        1'b1 }): state_nxt = DES_CHECK_DATA;
-			  ({DES_DATA,       1'bx, 7'bxxxxxxx,        1'bx }): state_nxt = DES_DATA;
-			  ({DES_CHECK_DATA, 1'bx, 7'bxxxxxxx,        1'b0 }): state_nxt = DES_IDLE;
-			  ({DES_CHECK_DATA, 1'bx, 7'bxxxxxxx,        1'b1 }): state_nxt = DES_ERROR;
-			  ({DES_ERROR,      1'bx, 7'bxxxxxxx,        1'bx }): state_nxt = DES_IDLE;
-               default:                                           state_nxt = state;
-        endcase
-    end
+        casex 	({state,          sin,  bit_cnt,		error})
+				({DES_IDLE,       1'b1, 7'bxxxxxxx,		1'bx }): state_nxt = DES_IDLE;
+				({DES_IDLE,       1'b0, 7'bxxxxxxx,     1'bx }): state_nxt = DES_WAIT;
+				({DES_WAIT,       1'bx, 7'bxxxxxxx,     1'bx }): state_nxt = DES_DATA;
+				({DES_DATA,       1'bx, 7'd98,          1'b0 }): state_nxt = DES_CHECK_DATA;
+				({DES_DATA,       1'bx, 7'bxxxxxxx,  	1'b1 }): state_nxt = DES_CHECK_DATA;
+				({DES_DATA,       1'bx, 7'bxxxxxxx,     1'bx }): state_nxt = DES_DATA;
+				({DES_CHECK_DATA, 1'bx, 7'bxxxxxxx,     1'b0 }): state_nxt = DES_IDLE;
+				({DES_CHECK_DATA, 1'bx, 7'bxxxxxxx,     1'b1 }): state_nxt = DES_ERROR;
+				({DES_ERROR,      1'bx, 7'bxxxxxxx,     1'bx }): state_nxt = DES_IDLE;
+				default:                       	          		 state_nxt = state;
+		endcase
+	end
 
    //__________COMBINATIONAL_LOGIC________
 	always @* 
-    begin
+	begin
 		bit_cnt_nxt       = bit_cnt;
 		error_nxt         = error;
 		rx_ready_nxt      = rx_ready;
@@ -202,8 +202,8 @@
 		//x^4 + x^1 +1
 		input  reg [67:0] data_in;
 		output reg [3:0]  crc_result;
-			   reg [67:0] d;
-               reg [3:0]  result;
+				reg [67:0] d;
+				reg [3:0]  result;
 		begin
 			d = data_in;
 			result[0] = d[66] ^ d[64] ^ d[63] ^ d[60] ^ d[56] ^ d[55] ^ d[54] ^ d[53] ^ d[51] ^ d[49] ^ d[48] ^ d[45] ^ d[41] ^ d[40] ^ d[39] ^ d[38] ^ d[36] ^ d[34] ^ d[33] ^ d[30] ^ d[26] ^ d[25] ^ d[24] ^ d[23] ^ d[21] ^ d[19] ^ d[18] ^ d[15] ^ d[11] ^ d[10] ^ d[9] ^ d[8] ^ d[6] ^ d[4] ^ d[3] ^ d[0];

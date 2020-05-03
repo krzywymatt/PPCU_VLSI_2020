@@ -29,7 +29,7 @@
 	output reg sout
  );
    //______________PARAMS______________ 
-	localparam SER_IDLE		    = 2'b00;
+	localparam SER_IDLE			= 2'b00;
 	localparam SER_ERROR_FRAME	= 2'b01;
 	localparam SER_DATA_FRAME	= 2'b10;
 	localparam SER_SEND_DATA	= 2'b11;
@@ -47,22 +47,22 @@
 	begin
 		if(!rst_n)
 		begin
-			state		    <= SER_IDLE;
-			data_buf	    <= 55'b0;
-			ctl             <= 11'b0;
-			bit_cnt  	    <= 6'b0;
-			sout		    <= 1'b1;
-			error_info      <= 1'b0;
+			state			<= SER_IDLE;
+			data_buf		<= 55'b0;
+			ctl         	<= 11'b0;
+			bit_cnt  		<= 6'b0;
+			sout			<= 1'b1;
+			error_info  	<= 1'b0;
 				
 		end
 		else 
 		begin
-			state		    <= state_nxt;
-			data_buf	    <= data_buf_nxt;
-			ctl             <= ctl_nxt;
-			bit_cnt	        <= bit_cnt_nxt;
-			sout		    <= sout_nxt;
-			error_info      <= error_info_nxt;			
+			state			<= state_nxt;
+			data_buf		<= data_buf_nxt;
+			ctl         	<= ctl_nxt;
+			bit_cnt	    	<= bit_cnt_nxt;
+			sout			<= sout_nxt;
+			error_info  	<= error_info_nxt;			
 		end
 	end
 		
