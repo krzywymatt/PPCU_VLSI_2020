@@ -45,7 +45,7 @@
    //________SEQUENTIAL_LOGIC__________ 
 	always @(posedge clk) 
 	begin
-	    if(!rst_n)
+		if(!rst_n)
 		begin
 			state		    <= SER_IDLE;
 			data_buf	    <= 55'b0;
@@ -96,10 +96,10 @@
 			SER_IDLE: 
 			begin
 				data_buf_nxt    = 55'b0;
-	            ctl_nxt         = 11'b0; 
+				ctl_nxt         = 11'b0; 
 				bit_cnt_nxt     = 6'b0;
 				sout_nxt        = 1'b1;
-		        error_info_nxt  = 1'b0;   								
+				error_info_nxt  = 1'b0;   								
 			end
 			
 			SER_ERROR_FRAME: 
@@ -118,17 +118,17 @@
 			
 			SER_SEND_DATA: 
 			begin
-			    if ( error_info == 1'b0 )
-			    begin
-				    bit_cnt_nxt  = bit_cnt - 1'b1;
-				    data_buf_nxt ={data_buf[53:0], 1'b0};
-				    sout_nxt     = data_buf[54];
+				if ( error_info == 1'b0 )
+				begin
+					bit_cnt_nxt  = bit_cnt - 1'b1;
+					data_buf_nxt ={data_buf[53:0], 1'b0};
+					sout_nxt     = data_buf[54];
 				end
 				else
 				begin
 					bit_cnt_nxt  = bit_cnt - 1'b1;
-                    ctl_nxt      = {ctl[9:0], 1'b0};
-                    sout_nxt     = ctl[10];
+					ctl_nxt      = {ctl[9:0], 1'b0};
+					sout_nxt     = ctl[10];
 				end
 			end	
 		endcase
