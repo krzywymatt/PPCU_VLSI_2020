@@ -1,4 +1,0 @@
-COMPILED_SDF_FILE = "mtm_Alu.sdf.gz.X",
-LOG_FILE = "mtm_Alu_sdf.log", 
-MTM_CONTROL = "TOOL_CONTROL",
-SCOPE = mtm_Alu_test_top.DUT ;
